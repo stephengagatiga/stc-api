@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using STC.API.Data;
-using STC.API.Entities.Users;
+using STC.API.Entities.UserEntity;
 using STC.API.Models.User;
 using System;
 using System.Collections.Generic;
@@ -18,32 +18,16 @@ namespace STC.API.Services
             _context = context;
         }
 
-        public UserRole AddRole(NewRole newRole)
-        {
-            try
-            {
-                var role = new UserRole() { Name = newRole.Name };
-                _context.UserRoles.Add(role);
-                _context.SaveChanges();
-                return role;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         public User AddUser(NewUserDto newUserDto)
         {
             try
             {
-                User user = new User{
+                User user = new User {
                     ObjectId = newUserDto.ObjectId,
                     FirstName = newUserDto.FirstName,
                     LastName = newUserDto.LastName,
                     Email = newUserDto.Email,
                     RoleId = newUserDto.RoleId,
-                    GroupId = newUserDto.GroupId,
                     SupervisorId = newUserDto.SupervisorId,
                     Active = true,
                     CreatedOn = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time"))
@@ -70,10 +54,31 @@ namespace STC.API.Services
             return user;
         }
 
-        public User GetUserById(int userId)
+        public User GetUserInfo(int userId)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = _context.Users
+                                    .Where(u => u.Id == userId)
+                                    .Include(u => u.Role)
+                                    .Include(u => u.Supervisor)
+                                    .FirstOrDefault();
             return user;
+        }
+
+        public User GetUser(UpdateUserDto updateUser, int userId)
+        {
+            var user = _context.Users
+                                    .Where(u => u.Id == userId)
+                                    .FirstOrDefault();
+            return user;
+        }
+
+        public void UpdateUser(UpdateUserDto updateUser, User user)
+        {
+            user.RoleId = updateUser.RoleId;
+            user.SupervisorId = updateUser.SupervisorId;
+            _context.Users.Update(user);
+            _context.Entry(user).State = EntityState.Modified;
+            _context.SaveChanges();
         }
 
         public void SaveChanges()
@@ -83,8 +88,25 @@ namespace STC.API.Services
 
         public ICollection<User> GetUsers()
         {
-            var users = _context.Users.Where(u => u.Active == true).ToList();
+            var users = _context.Users
+                                    .Where(u => u.Active == true)
+                                    .OrderBy(u => u.FirstName)
+                                    .ToList();
             return users;
+        }
+
+        public ICollection<User> GetAllUsers()
+        {
+            var users = _context.Users
+                                    .OrderBy(u => u.FirstName)
+                                    .ToList();
+            return users;
+        }
+
+        public User GetUser(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            return user;
         }
     }
 }

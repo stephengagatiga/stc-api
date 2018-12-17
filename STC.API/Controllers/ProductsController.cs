@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using STC.API.Models.Product;
+using STC.API.Models.Utils;
 
 namespace STC.API.Controllers
 {
@@ -13,16 +14,24 @@ namespace STC.API.Controllers
     public class ProductsController : Controller
     {
         private IProductData _productData;
+        private IGroupData _groupData;
 
-        public ProductsController(IProductData productData)
+        public ProductsController(IProductData productData, IGroupData groupData)
         {
             _productData = productData;
+            _groupData = groupData;
         }
 
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetPrincipals()
         {
             return Ok(_productData.GetPrincipals());
+        }
+
+        [HttpGet("all")]
+        public IActionResult GetAllPrincipals()
+        {
+            return Ok(_productData.GetAllPrincipals());
         }
 
         [HttpPost]
@@ -35,7 +44,17 @@ namespace STC.API.Controllers
                 {
                     return StatusCode(400, "Principal already exist!");
                 }
-                var newPrincipal = _productData.AddPrincipal(principalNewDto.Name);
+
+                if (principalNewDto.GroupId != null)
+                {
+                    var group = _groupData.GetGroup(principalNewDto.GroupId ?? 0);
+                    if (group == null)
+                    {
+                        return StatusCode(404, "Group does not exist!");
+                    }
+                }
+
+                var newPrincipal = _productData.AddPrincipal(principalNewDto.Name, principalNewDto.GroupId);
                 return Ok(newPrincipal);
             }
             return BadRequest();
@@ -63,29 +82,28 @@ namespace STC.API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{principalId}/products/{productId}")]
-        public IActionResult DeleteProduct(int principalId, int productId)
+        [HttpPost("{principalId}/products/{productId}/active")]
+        public IActionResult ChangeProductActiveState([FromBody] ActiveState activeState, int principalId, int productId)
         {
-
             var product = _productData.GetProduct(principalId, productId);
             if (product == null)
             {
                 return StatusCode(400, "Principal or product not found!");
             }
 
-            _productData.DeleteProduct(product);
+            _productData.ChangeProductActiveState(product, activeState.Active);
             return NoContent();
         }
 
-        [HttpDelete("{principalId}")]
-        public IActionResult DeletePrincipal(int principalId)
+        [HttpPost("{principalId}/activate")]
+        public IActionResult ChangePrincipalActiveState([FromBody] ActiveState activeState, int principalId)
         {
             var principal = _productData.GetPrincipalById(principalId);
             if (principal == null)
             {
                 return StatusCode(400, "Principal not found!");
             }
-            _productData.DeletePrincipal(principal);
+            _productData.ChangePrincipalActiveState(principal, activeState.Active);
             return NoContent();
         }
 
@@ -99,6 +117,16 @@ namespace STC.API.Controllers
                 {
                     return StatusCode(400, "Principal not found!");
                 }
+
+                if (principalEditDto.GroupId != null)
+                {
+                    var group = _groupData.GetGroup(principalEditDto.GroupId ?? 0);
+                    if (group == null)
+                    {
+                        return StatusCode(404, "Group does not exist!");
+                    }
+                }
+
                 _productData.EditPrincipal(principal, principalEditDto);
                 return NoContent();
             }

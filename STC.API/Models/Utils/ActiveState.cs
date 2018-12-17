@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace STC.API.Models.User
+namespace STC.API.Models.Utils
 {
-    public class NewRole
+    public class ActiveState
     {
         [Required]
-        public string Name { get; set; }
+        public bool Active { get; set; }
     }
 }

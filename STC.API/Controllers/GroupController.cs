@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using STC.API.Models.Group;
+using STC.API.Models.Utils;
 
 namespace STC.API.Controllers
 {
@@ -14,35 +15,14 @@ namespace STC.API.Controllers
     public class GroupController : Controller
     {
         private IGroupData _groupData;
-        private IProductData _productData;
-        private IUserData _userData;
-
-        public GroupController(IGroupData groupData, IProductData productData, IUserData userData)
+        
+        public GroupController(IGroupData groupData)
         {
             _groupData = groupData;
-            _productData = productData;
-            _userData = userData;
-        }
-
-        [HttpGet]
-        public IActionResult GetGroups()
-        {
-            return Ok(_groupData.GetGroups());
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetGroup(int id)
-        {
-            var technology = _groupData.GetGroupAllData(id);
-            if (technology == null)
-            {
-                return StatusCode(404, "Group not found!");
-            }
-            return Ok(technology);
         }
 
         [HttpPost]
-        public IActionResult AddGroup([FromBody] GroupNew newGroup)
+        public IActionResult AddGroup([FromBody] GroupNewDto newGroup)
         {
             if (ModelState.IsValid)
             {
@@ -56,82 +36,51 @@ namespace STC.API.Controllers
             return BadRequest();
         }
 
-        [HttpPost("{id}")]
-        public IActionResult UpdateGroup([FromBody] GroupUpdateDto groupUpdateDto, int id)
+        [HttpGet]
+        public IActionResult GetGroups()
         {
-            if (ModelState.IsValid)
-            {
-                var group = _groupData.GetGroup(id);
-                if (group == null)
-                {
-                    return StatusCode(404, "Group not found!");
-                }
-                _groupData.UpdateGroup(group, groupUpdateDto);
-                return StatusCode(204);
-            }
-            return BadRequest();
+            var groups = _groupData.GetGroups();
+            return Ok(groups);
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteGroup(int id)
+        [HttpGet("all")]
+        public IActionResult GetAllGroups()
         {
-
-            var group = _groupData.GetGroup(id);
-            if (group == null)
-            {
-                return StatusCode(404, "Group not found!");
-            }
-            _groupData.DeleteGroup(group);
-            return NoContent();
+            var groups = _groupData.GetAllGroups();
+            return Ok(groups);
         }
 
-        [HttpPost("{groupId}/members")]
-        public IActionResult AddGroupMember([FromBody] GroupMemberNewDto groupMemberNewDto, int groupId)
+        [HttpGet("{groupId}")]
+        public IActionResult GetGroup(int groupId)
         {
-            if (ModelState.IsValid)
-            {
-                var group = _groupData.GetGroup(groupId);
-                if (group == null)
-                {
-                    return StatusCode(404, "Group not found!");
-                }
-
-                var user = _userData.GetUserById(groupMemberNewDto.UserId);
-                if (user == null)
-                {
-                    return StatusCode(404, "User not found!");
-                }
-
-                var checkMember = _groupData.GetGroupMember(groupId, groupMemberNewDto.UserId);
-                if (checkMember != null)
-                {
-                    return StatusCode(400, "Member already existed!");
-                }
-
-                _groupData.AddMember(groupMemberNewDto, groupId);
-                return NoContent();
-            }
-            return BadRequest();
+            var group = _groupData.GetGroup(groupId);
+            return Ok(group);
         }
 
-        [HttpDelete("{groupId}/members/{userId}")]
-        public IActionResult DeleteGroupMember(int groupId, int userId)
+        [HttpPost("{groupId}")]
+        public IActionResult EditGroupname([FromBody] GroupUpdateDto groupUpdateDto, int groupId)
         {
-            var group = _groupData.GetGroupAllData(groupId);
+            var group = _groupData.GetGroup(groupId);
             if (group == null)
             {
                 return NotFound();
             }
+            _groupData.EditGroupName(group, groupUpdateDto.Name);
+            return NoContent();
+        }
 
-            var groupMember = _groupData.GetGroupMember(groupId, userId);
-            if (groupMember == null)
+        [HttpPost("{groupId}/active")]
+        public IActionResult ChangeGroupActiveState([FromBody] ActiveState activeState, int groupId)
+        {
+            var group = _groupData.GetGroup(groupId);
+            if (group == null)
             {
                 return NotFound();
             }
-
-            _groupData.DeleteMember(groupMember);
+            _groupData.ChangGroupActivState(group, activeState.Active);
             return NoContent();
         }
+
 
     }
 }

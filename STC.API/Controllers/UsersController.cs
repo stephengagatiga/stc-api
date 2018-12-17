@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using STC.API.Models.User;
-using STC.API.Entities.Users;
+using STC.API.Entities.UserEntity;
 
 namespace STC.API.Controllers
 {
@@ -70,21 +70,6 @@ namespace STC.API.Controllers
             return BadRequest();
         }
 
-        [HttpPost("role")]
-        public IActionResult AddRole([FromBody] NewRole newRole)
-        {
-            if (ModelState.IsValid)
-            {
-                var role = _userData.AddRole(newRole);
-                if (role != null)
-                {
-                    return Ok(role);
-                }
-                return StatusCode(500);
-            }
-            return BadRequest();
-        }
-
         [AllowAnonymous]
         [HttpPost("batch")]
         public IActionResult UploadUsers([FromBody] BulkNewUserDto bulkNewUserDto)
@@ -108,6 +93,33 @@ namespace STC.API.Controllers
         {
             var users = _userData.GetUsers();
             return Ok(users);
+        }
+
+        [HttpGet("{userId}")]
+        public IActionResult GetUser(int userId)
+        {
+            var user = _userData.GetUserInfo(userId);
+            return Ok(user);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("all")]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userData.GetAllUsers();
+            return Ok(users);
+        }
+
+        [HttpPost("{userId}")]
+        public IActionResult UpdateUser([FromBody] UpdateUserDto updateUser, int userId)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userData.GetUser(updateUser, userId);
+                _userData.UpdateUser(updateUser, user);
+                return NoContent();
+            }
+            return BadRequest();
         }
     }
 }

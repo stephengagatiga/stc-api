@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using STC.API.Data;
 
 namespace STC.API.Migrations
 {
     [DbContext(typeof(STCDbContext))]
-    partial class STCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181212061119_RemoveGroupInUserTbl")]
+    partial class RemoveGroupInUserTbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,25 +116,6 @@ namespace STC.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("STC.API.Entities.ProductAssignmentEntity.ProductAssignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProductAssignments");
                 });
 
             modelBuilder.Entity("STC.API.Entities.ProductEntity.Principal", b =>
@@ -343,19 +326,6 @@ namespace STC.API.Migrations
                     b.HasOne("STC.API.Entities.AccountEntity.Account", "Account")
                         .WithMany("AccountContacts")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("STC.API.Entities.ProductAssignmentEntity.ProductAssignment", b =>
-                {
-                    b.HasOne("STC.API.Entities.ProductEntity.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("STC.API.Entities.UserEntity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

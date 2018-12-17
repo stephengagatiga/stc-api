@@ -21,7 +21,6 @@ namespace STC.API.Models.User
         public string LastName { get; set; }
 
         public int? RoleId { get; set; }
-        public int? GroupId { get; set; }
         public int? SupervisorId { get; set; }
 
     }

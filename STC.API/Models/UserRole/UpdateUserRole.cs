@@ -4,15 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace STC.API.Models.Group
+namespace STC.API.Models.UserRole
 {
-    public class GroupMemberNewDto
+    public class UpdateUserRole
     {
         [Required]
-        public int UserId { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        [MaxLength(150)]
-        public string Role { get; set; }
+        public bool Active { get; set; }
     }
 }

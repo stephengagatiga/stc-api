@@ -20,19 +20,11 @@ namespace STC.API.Services
             _context = context;
         }
 
-        public void AddMember(GroupMemberNewDto groupMemberNewDto, int groupId)
-        {
-            GroupMember member = new GroupMember { GroupId = groupId, UserId = groupMemberNewDto.UserId, Role = groupMemberNewDto.Role };
-            _context.GroupMembers.Add(member);
-            _context.Entry(member).State = EntityState.Added;
-            _context.SaveChanges();
-        }
-
         public Group AddGroup(string groupName)
         {
             if (_context.Groups.FirstOrDefault(item => item.Name == groupName) == null)
             {
-                Group group = new Group {Name = groupName };
+                Group group = new Group {Name = groupName, Active = true };
                 _context.Groups.Add(group);
                 _context.Entry(group).State = EntityState.Added;
                 _context.SaveChanges();
@@ -41,61 +33,41 @@ namespace STC.API.Services
             return null;
         }
 
-        public void DeleteMember(GroupMember groupMember)
+        public void ChangGroupActivState(Group group, bool active)
         {
-            _context.GroupMembers.Remove(groupMember);
-            _context.Entry(groupMember).State = EntityState.Deleted;
-            SaveChanges();
-        }
-
-        public void DeleteGroup(Group group)
-        {
-            _context.Groups.Remove(group);
-            SaveChanges();
-        }
-
-        public ICollection<Group> GetGroups()
-        {
-            var groups = _context.Groups.ToList();
-            return groups;
-        }
-
-        public Group GetGroup(int groupId)
-        {
-            var group = _context.Groups
-                    .FirstOrDefault(item => item.Id == groupId);
-            return group;
-        }
-
-        public Group GetGroupAllData(int groupId)
-        {
-            var groupWithRelatedData = _context.Groups
-                                .Where(item => item.Id == groupId)
-                                .Include(item => item.Members)
-                                .ThenInclude(u => u.User)
-                                .FirstOrDefault();
-            return groupWithRelatedData;
-        }
-
-        public void UpdateGroup(Group group, GroupUpdateDto groupUpdateDto)
-        {
-            group.Name = groupUpdateDto.Name;
+            group.Active = active;
+            _context.Groups.Update(group);
             _context.Entry(group).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
-        public GroupMember GetGroupMember(int groupId, int groupMemberId)
+        public void EditGroupName(Group group, string groupName)
         {
-            var groupMember = _context.GroupMembers.FirstOrDefault(g => g.GroupId == groupId && g.UserId == groupMemberId);
-            return groupMember;
-        }
-
-    
-
-        private void SaveChanges()
-        {
+            group.Name = groupName;
+            _context.Groups.Update(group);
+            _context.Entry(group).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
+        public ICollection<Group> GetAllGroups()
+        {
+            var groups = _context.Groups
+                                .OrderBy(g => g.Name);
+            return groups.ToList();
+        }
+
+        public Group GetGroup(int groupId)
+        {
+            var group = _context.Groups.FirstOrDefault(g => g.Id == groupId);
+            return group;
+        }
+
+        public ICollection<Group> GetGroups()
+        {
+            var groups = _context.Groups
+                                .Where(g => g.Active == true)
+                                .OrderBy(g => g.Name);
+            return groups.ToList();
+        }
     }
 }

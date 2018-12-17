@@ -4,14 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace STC.API.Models.Product
+namespace STC.API.Models.User
 {
-    public class PrincipalNewDto
+    public class UpdateUserDto
     {
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
 
-        public int? GroupId { get; set; }
+        [Required]
+        public int RoleId { get; set; }
+
+        [Required]
+        public int SupervisorId { get; set; }
     }
 }

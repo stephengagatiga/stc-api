@@ -11,5 +11,7 @@ namespace STC.API.Models.Product
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+
+        public int? GroupId { get; set; }
     }
 }

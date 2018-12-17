@@ -1,4 +1,4 @@
-﻿using STC.API.Entities.Users;
+﻿using STC.API.Entities.UserEntity;
 using STC.API.Models.User;
 using System;
 using System.Collections.Generic;
@@ -10,12 +10,15 @@ namespace STC.API.Services
     public interface IUserData
     {
         User GetUser(string objectId);
+        User GetUser(int userId);
         User AddUser(NewUserDto newUserDto);
-        User GetUserById(int userId);
+        User GetUserInfo(int userId);
+        User GetUser(UpdateUserDto updateUser, int userId);
+        void UpdateUser(UpdateUserDto updateUser, User user);
         User CheckUserIfExistByEmailOrObjectId(string email, string objectId);
         ICollection<User> GetUsers();
+        ICollection<User> GetAllUsers();
 
-        UserRole AddRole(NewRole newRole);
         void SaveChanges();
     }
 }

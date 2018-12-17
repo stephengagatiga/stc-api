@@ -40,7 +40,6 @@ namespace STC.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Bearer")]
         public IActionResult GetAccounts()
         {
             return Ok(_accountData.GetAccounts());

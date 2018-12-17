@@ -170,7 +170,7 @@ namespace STC.API.Controllers
         }
 
         [HttpGet("{ticketId}/emails")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        //[Authorize(AuthenticationSchemes = "Bearer")]
         public IActionResult GetTicketEmails(int ticketId)
         {
             var msgs = _utils.GetTicketEmails(ticketId);

@@ -1,26 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using STC.API.Data;
-using STC.API.Entities.AccountEntity;
-using STC.API.Entities.Users;
-using STC.API.Extensions;
 using STC.API.Services;
 
 
@@ -60,8 +47,10 @@ namespace STC.API
             services.AddScoped<IUserData, SqlUserData>();
             services.AddScoped<IGroupData, SqlGroupData>();
             services.AddScoped<IProductData, SqlProductData>();
+            services.AddScoped<IProductAssignmentData, SqlProductAssignmentData>();
             services.AddScoped<IAccountData, SqlAccountData>();
             services.AddScoped<ITicketData, SqlTicketData>();
+            services.AddScoped<IUserRoleData, SqlUserRoleData>();
             services.AddTransient<IUtils, Utils>();
 
             //config mvc

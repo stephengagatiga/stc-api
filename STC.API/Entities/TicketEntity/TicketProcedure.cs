@@ -1,4 +1,5 @@
-﻿using STC.API.Entities.Users;
+﻿using STC.API.Entities.UserEntity;
+using STC.API.Entities.UserRoleEntity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

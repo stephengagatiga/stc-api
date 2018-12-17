@@ -11,14 +11,11 @@ namespace STC.API.Services
 {
     public interface IGroupData
     {
-        ICollection<Group> GetGroups();
-        Group GetGroup(int groupId);
-        Group GetGroupAllData(int groupId);
         Group AddGroup(string groupName);
-        void UpdateGroup(Group group, GroupUpdateDto groupUpdateDto);
-        void DeleteGroup(Group group);
-        void DeleteMember(GroupMember groupMember);
-        void AddMember(GroupMemberNewDto groupMemberNewDto, int groupId);
-        GroupMember GetGroupMember(int groupId, int groupMemberId);
+        ICollection<Group> GetGroups();
+        ICollection<Group> GetAllGroups();
+        Group GetGroup(int groupId);
+        void EditGroupName(Group group, string groupName);
+        void ChangGroupActivState(Group group, bool active);
     }
 }

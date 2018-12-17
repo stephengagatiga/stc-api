@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using STC.API.Entities.GroupEntity;
+using STC.API.Entities.ProductAssignmentEntity;
+using STC.API.Entities.UserRoleEntity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace STC.API.Entities.Users
+namespace STC.API.Entities.UserEntity
 {
     public class User 
     {
@@ -33,12 +35,10 @@ namespace STC.API.Entities.Users
         [ForeignKey("RoleId")]
         public UserRole Role { get; set; }
 
-        public int? GroupId { get; set; }
-        [ForeignKey("GroupId")]
-        public Group Group { get; set; }
-
         public int? SupervisorId { get; set; }
         public User Supervisor { get; set; }
+
+        public ICollection<ProductAssignment> Products { get; set; }
 
         [Required]
         public DateTime CreatedOn { get; set; }

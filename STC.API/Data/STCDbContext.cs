@@ -2,13 +2,15 @@
 using STC.API.Entities.ProductEntity;
 using STC.API.Entities.GroupEntity;
 using STC.API.Entities.TicketEntity;
-using STC.API.Entities.Users;
+using STC.API.Entities.UserRoleEntity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using STC.API.Entities.UserEntity;
+using STC.API.Entities.ProductAssignmentEntity;
 
 namespace STC.API.Data
 {
@@ -22,9 +24,9 @@ namespace STC.API.Data
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<Principal> Principals { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductAssignment> ProductAssignments { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountIndustry> AccountIndustries { get; set; }
         public DbSet<AccountContact> AccountContacts { get; set; }

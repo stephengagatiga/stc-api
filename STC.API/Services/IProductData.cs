@@ -13,13 +13,14 @@ namespace STC.API.Services
         Principal GetPrincipalByName(string principalName);
         Principal GetPrincipalById(int principalId);
         Principal GetPrincipalByIdWithProducts(int principalId);
-        Principal AddPrincipal(string principalName);
+        Principal AddPrincipal(string principalName, int? groupId);
         ICollection<Principal> GetPrincipals();
+        ICollection<Principal> GetAllPrincipals();
         Product AddProduct(int principalId, string productName);
-        void DeleteProduct(Product product);
+        void ChangeProductActiveState(Product product, bool active);
         Product GetProduct(int principalId, int productId);
         Product GetProduct(int productId);
-        void DeletePrincipal(Principal principal);
+        void ChangePrincipalActiveState(Principal principal, bool active);
         void EditPrincipal(Principal principal, PrincipalEditDto principalEditDto);
         void EditProduct(Product product, ProductEditDto principalEditDto);
     }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using STC.API.Data;
 
 namespace STC.API.Migrations
 {
     [DbContext(typeof(STCDbContext))]
-    partial class STCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181206064029_UpdateGroupTable")]
+    partial class UpdateGroupTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,25 +116,6 @@ namespace STC.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("STC.API.Entities.ProductAssignmentEntity.ProductAssignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProductAssignments");
                 });
 
             modelBuilder.Entity("STC.API.Entities.ProductEntity.Principal", b =>
@@ -274,7 +257,7 @@ namespace STC.API.Migrations
                     b.ToTable("TicketProcedures");
                 });
 
-            modelBuilder.Entity("STC.API.Entities.UserEntity.User", b =>
+            modelBuilder.Entity("STC.API.Entities.Users.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -291,6 +274,8 @@ namespace STC.API.Migrations
                         .IsRequired()
                         .HasMaxLength(150);
 
+                    b.Property<int?>("GroupId");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(150);
@@ -304,6 +289,8 @@ namespace STC.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.HasIndex("ObjectId")
                         .IsUnique();
 
@@ -314,13 +301,11 @@ namespace STC.API.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("STC.API.Entities.UserRoleEntity.UserRole", b =>
+            modelBuilder.Entity("STC.API.Entities.Users.UserRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active");
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -346,19 +331,6 @@ namespace STC.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("STC.API.Entities.ProductAssignmentEntity.ProductAssignment", b =>
-                {
-                    b.HasOne("STC.API.Entities.ProductEntity.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("STC.API.Entities.UserEntity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("STC.API.Entities.ProductEntity.Principal", b =>
                 {
                     b.HasOne("STC.API.Entities.GroupEntity.Group", "Group")
@@ -381,7 +353,7 @@ namespace STC.API.Migrations
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("STC.API.Entities.UserEntity.User", "Assignee")
+                    b.HasOne("STC.API.Entities.Users.User", "Assignee")
                         .WithMany()
                         .HasForeignKey("AssigneeId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -394,7 +366,7 @@ namespace STC.API.Migrations
 
             modelBuilder.Entity("STC.API.Entities.TicketEntity.TicketHistory", b =>
                 {
-                    b.HasOne("STC.API.Entities.UserEntity.User", "CreatedBy")
+                    b.HasOne("STC.API.Entities.Users.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -407,7 +379,7 @@ namespace STC.API.Migrations
 
             modelBuilder.Entity("STC.API.Entities.TicketEntity.TicketProcedure", b =>
                 {
-                    b.HasOne("STC.API.Entities.UserEntity.User", "CreatedBy")
+                    b.HasOne("STC.API.Entities.Users.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -418,13 +390,17 @@ namespace STC.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("STC.API.Entities.UserEntity.User", b =>
+            modelBuilder.Entity("STC.API.Entities.Users.User", b =>
                 {
-                    b.HasOne("STC.API.Entities.UserRoleEntity.UserRole", "Role")
+                    b.HasOne("STC.API.Entities.GroupEntity.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId");
+
+                    b.HasOne("STC.API.Entities.Users.UserRole", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId");
 
-                    b.HasOne("STC.API.Entities.UserEntity.User", "Supervisor")
+                    b.HasOne("STC.API.Entities.Users.User", "Supervisor")
                         .WithMany()
                         .HasForeignKey("SupervisorId");
                 });

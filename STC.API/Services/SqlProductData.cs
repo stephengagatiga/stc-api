@@ -19,9 +19,13 @@ namespace STC.API.Services
             _context = context;
         }
 
-        public Principal AddPrincipal(string principalName)
+        public Principal AddPrincipal(string principalName, int? groupId)
         {
-            var principal = new Principal { Name = principalName, Products = new List<Product>(), Active = true };
+            var principal = new Principal {
+                Name = principalName,
+                Products = new List<Product>(),
+                GroupId = groupId,
+                Active = true };
             _context.Principals.Add(principal);
             _context.Entry(principal).State = EntityState.Added;
             _context.SaveChanges();
@@ -41,23 +45,26 @@ namespace STC.API.Services
             return null;
         }
 
-        public void DeletePrincipal(Principal principal)
+        public void ChangePrincipalActiveState(Principal principal, bool active)
         {
-            _context.Principals.Remove(principal);
-            _context.Entry(principal).State = EntityState.Deleted;
+            principal.Active = active;
+            _context.Principals.Update(principal);
+            _context.Entry(principal).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
-        public void DeleteProduct(Product product)
+        public void ChangeProductActiveState(Product product, bool active)
         {
-            _context.Products.Remove(product);
-            _context.Entry(product).State = EntityState.Deleted;
+            product.Active = active;
+            _context.Products.Update(product);
+            _context.Entry(product).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
         public void EditPrincipal(Principal principal, PrincipalEditDto principalEditDto)
         {
             principal.Name = principalEditDto.Name;
+            principal.GroupId = principalEditDto.GroupId;
             _context.Entry(principal).State = EntityState.Modified;
             _context.SaveChanges();
         }
@@ -94,8 +101,23 @@ namespace STC.API.Services
         {
             var principals = _context.Principals
                                     .Where(p => p.Active == true)
-                                    .OrderBy(principal => principal.Name)
-                                    .Include(item => item.Products)
+                                    .OrderBy(p => p.Name)
+                                    .ToList();
+
+            var products = _context.Products
+                                     .Where(prod => prod.Active == true)
+                                     .ToList();
+                                     
+
+            return principals;
+        }
+
+        public ICollection<Principal> GetAllPrincipals()
+        {
+            var principals = _context.Principals
+                                    .OrderBy(p => p.Name)
+                                    .Include(p => p.Products)
+                                    .Include(p => p.Group)
                                     .ToList();
             return principals;
         }
