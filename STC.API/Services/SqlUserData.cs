@@ -61,6 +61,12 @@ namespace STC.API.Services
                                     .Include(u => u.Role)
                                     .Include(u => u.Supervisor)
                                     .FirstOrDefault();
+            var userProducts = _context.ProductAssignments
+                                                    .Where(pa => pa.UserId == userId)
+                                                    .Include(pa => pa.Product)
+                                                    .ToList();
+            user.Products = userProducts;
+
             return user;
         }
 
@@ -76,6 +82,7 @@ namespace STC.API.Services
         {
             user.RoleId = updateUser.RoleId;
             user.SupervisorId = updateUser.SupervisorId;
+            user.Active = updateUser.Active;
             _context.Users.Update(user);
             _context.Entry(user).State = EntityState.Modified;
             _context.SaveChanges();
@@ -107,6 +114,13 @@ namespace STC.API.Services
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
             return user;
+        }
+
+        public ICollection<User> GetUsersInThisRole(int roleId)
+        {
+            var users = _context.Users.Where(u => u.RoleId == roleId && u.Active == true)
+                                        .ToList();
+            return users;
         }
     }
 }

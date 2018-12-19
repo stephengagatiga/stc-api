@@ -14,5 +14,8 @@ namespace STC.API.Models.User
 
         [Required]
         public int SupervisorId { get; set; }
+
+        [Required]
+        public bool Active { get; set; }
     }
 }

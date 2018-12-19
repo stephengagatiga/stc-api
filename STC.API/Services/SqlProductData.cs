@@ -133,5 +133,12 @@ namespace STC.API.Services
             var product = _context.Products.FirstOrDefault(p => p.Id == productId);
             return product;
         }
+
+        public ICollection<Product> GetAllProductsWithThisName(string[] productNames)
+        {
+            var products = _context.Products.Where(p => productNames.FirstOrDefault(pn => pn.ToUpper() == p.Name.ToUpper()) != null)
+                                            .ToList();
+            return products;
+        }
     }
 }

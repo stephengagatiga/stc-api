@@ -40,11 +40,16 @@ namespace STC.API.Controllers
             return Ok(productAssignment);
         }
 
-        [HttpGet]
-        public IActionResult GetAllUserProductAssignment()
+        [HttpDelete("{productAssignmentId}")]
+        public IActionResult RemoveUserProductAssignment(int productAssignmentId)
         {
-            var users = _productAssignemtData.GetAllUserProductAssignment();
-            return Ok(users);
+            var pa = _productAssignemtData.GetProductAssignment(productAssignmentId);
+            if (pa != null)
+            {
+                _productAssignemtData.RemoveUserProduct(pa);
+                return NoContent();
+            }
+            return NotFound();
         }
 
     }

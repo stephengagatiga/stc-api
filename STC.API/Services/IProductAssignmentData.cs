@@ -13,6 +13,7 @@ namespace STC.API.Services
         ProductAssignment AssignProduct(Product product, User user);
         ProductAssignment GetProductAssignment(int productAssingmentId);
         ICollection<User> GetAllUserProductAssignment();
+        ICollection<ProductAssignment> GetAllUserInThisProducts(ICollection<Product> products);
         void RemoveUserProduct(ProductAssignment productAssignment);
     }
 }

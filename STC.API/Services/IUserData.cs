@@ -17,6 +17,7 @@ namespace STC.API.Services
         void UpdateUser(UpdateUserDto updateUser, User user);
         User CheckUserIfExistByEmailOrObjectId(string email, string objectId);
         ICollection<User> GetUsers();
+        ICollection<User> GetUsersInThisRole(int roleId);
         ICollection<User> GetAllUsers();
 
         void SaveChanges();

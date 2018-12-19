@@ -23,5 +23,6 @@ namespace STC.API.Services
         void ChangePrincipalActiveState(Principal principal, bool active);
         void EditPrincipal(Principal principal, PrincipalEditDto principalEditDto);
         void EditProduct(Product product, ProductEditDto principalEditDto);
+        ICollection<Product> GetAllProductsWithThisName(string[] products);
     }
 }

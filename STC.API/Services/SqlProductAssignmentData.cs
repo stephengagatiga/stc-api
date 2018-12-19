@@ -34,6 +34,13 @@ namespace STC.API.Services
             return productAssignment;
         }
 
+        public ICollection<ProductAssignment> GetAllUserInThisProducts(ICollection<Product> products)
+        {
+            var productAssignments = _context.ProductAssignments.Where(pa => products.FirstOrDefault(pi => pi.Id == pa.ProductId) != null)
+                                                    .ToList();
+            return productAssignments;
+        }
+
         public ICollection<User> GetAllUserProductAssignment()
         {
             var users = _context.Users
