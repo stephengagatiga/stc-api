@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using STC.API.Data;
 
 namespace STC.API.Migrations
 {
     [DbContext(typeof(STCDbContext))]
-    partial class STCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190122032548_ComponentsInOpportunity")]
+    partial class ComponentsInOpportunity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -342,9 +344,6 @@ namespace STC.API.Migrations
                     b.Property<DateTime>("Created");
 
                     b.Property<int>("CreatedById");
-
-                    b.Property<decimal>("DealSize")
-                        .HasColumnType("decimal(12, 4)");
 
                     b.Property<DateTime>("Modified");
 

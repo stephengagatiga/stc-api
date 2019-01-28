@@ -12,6 +12,7 @@ namespace STC.API.Services
         string GeneratePassword();
         Task SendClientAccountCredentialAsync(string name, string email, string password);
         Task SendReply(string fromAddressTitle, string[] toAddress, string subject, string body, string userEmail);
+        Task TestSend();
         List<EmailMessageDto> GetTicketEmails(int ticketId);
     }
 }

@@ -9,6 +9,8 @@ using STC.API.Models.Ticket;
 using MailKit.Net.Imap;
 using MailKit;
 using MailKit.Search;
+using System.Text;
+using System.IO;
 
 namespace STC.API.Services
 {
@@ -92,9 +94,20 @@ namespace STC.API.Services
                         headerFromEmail = message.Headers.FirstOrDefault(h => h.Field == "X-HelpDesk-FromEmail").Value;
                     }
 
+                    var emailMessage = "";
+                    var emailMessageHtml = message.GetTextBody(MimeKit.Text.TextFormat.Html);
+                    if (emailMessageHtml != null)
+                    {
+                        emailMessage = PopulateInlineImages(message, emailMessageHtml);
+                    }
+                    else
+                    {
+                        emailMessage = message.GetTextBody(MimeKit.Text.TextFormat.Text);
+                    }
+
                     msgs.Add(new EmailMessageDto
                     {
-                        Message = message.GetTextBody(MimeKit.Text.TextFormat.Plain),
+                        Message = emailMessage,
                         Date = message.Date,
                         HeaderFrom = headerFrom,
                         HeaderFromEmail = headerFromEmail
@@ -115,11 +128,32 @@ namespace STC.API.Services
                     {
                         headerFrom = helpdeskFrom.Value;
                         headerFromEmail = message.Headers.FirstOrDefault(h => h.Field == "X-HelpDesk-FromEmail").Value;
+                    } else
+                    {
+                        var headerFromSplit = message.Headers.FirstOrDefault(h => h.Field == "From").Value.Split(' ');
+                        var tmpFrom = new StringBuilder();
+                        for(var i = 0; i < headerFromSplit.Length-1; i++)
+                        {
+                            tmpFrom.Append(headerFromSplit[i]);
+                        }
+                        headerFrom = tmpFrom.ToString();
+                        headerFromEmail = headerFromSplit[headerFromSplit.Length - 1];
+                        headerFromEmail = headerFromEmail.Substring(1, headerFromEmail.Length - 2);
+                    }
+
+                    var emailMessage = "";
+                    var emailMessageHtml = message.GetTextBody(MimeKit.Text.TextFormat.Html);
+                    if (emailMessageHtml != null)
+                    {
+                        emailMessage = PopulateInlineImages(message, emailMessageHtml);
+                    } else
+                    {
+                        emailMessage = message.GetTextBody(MimeKit.Text.TextFormat.Text);
                     }
 
                     msgs.Add(new EmailMessageDto
                     {
-                        Message = message.GetTextBody(MimeKit.Text.TextFormat.Plain),
+                        Message = emailMessage,
                         Date = message.Date,
                         HeaderFrom = headerFrom,
                         HeaderFromEmail = headerFromEmail
@@ -207,6 +241,7 @@ namespace STC.API.Services
 
                 // Set the plain-text version of the message text
                 builder.TextBody = body;
+                builder.HtmlBody = body;
 
                 // We may also want to attach a calendar event for Monica's party...
                 //builder.Attachments.Add(@"C:\Users\phen.STC-SJSG\Documents\Apps.xlsx");
@@ -229,6 +264,77 @@ namespace STC.API.Services
                 Console.WriteLine(e);
                 throw e;
             }
+        }
+
+        public async Task TestSend()
+        {
+            try
+            {
+
+                //string toAddress = "phen@shellsoft.com.ph";
+                //string toAdressTitle = "phen";
+
+                //Smtp Server  
+                string SmtpServer = "smtp.office365.com";
+                //Smtp Port Number  
+                int SmtpPortNumber = 587;
+
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("STC HelpDesk", "stchelpdesk@shellsoft.com.ph"));
+                message.To.Add(new MailboxAddress("phen@shellsoft.com.ph"));
+
+                message.Subject = "Test";
+
+                var builder = new BodyBuilder();
+
+
+                // Set the plain-text version of the message text
+                builder.TextBody = "test";
+
+                // We may also want to attach a calendar event for Monica's party...
+                //builder.Attachments.Add(@"C:\Users\phen.STC-SJSG\Documents\Apps.xlsx");
+
+                // Now we just need to set the message body and we're done
+                message.Body = builder.ToMessageBody();
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect(SmtpServer, SmtpPortNumber, true);
+                    client.Authenticate("stchelpdesk@shellsoft.com.ph", "+a5razAw");
+                    await client.SendAsync(message);
+                    client.Disconnect(true);
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Send Email Message Failed!");
+                Console.WriteLine(e);
+                throw e;
+            }
+        }
+
+        private string PopulateInlineImages(MimeMessage newMessage, string bodyHtml)
+        {
+            // encode as base64 for easier downloading/storage 
+            if (bodyHtml != null)
+            {
+                foreach (MimePart att in newMessage.BodyParts)
+                {
+                    if (att.ContentId != null && att.ContentObject != null && att.ContentType.MediaType == "image" && (bodyHtml.IndexOf("cid:" + att.ContentId) > -1))
+                    {
+                        byte[] b;
+                        using (var mem = new MemoryStream())
+                        {
+                            att.ContentObject.DecodeTo(mem);
+                            b = mem.ToArray();
+                        }
+                        string imageBase64 = "data:" + att.ContentType.MimeType + ";base64," + System.Convert.ToBase64String(b);
+                        bodyHtml = bodyHtml.Replace("cid:" + att.ContentId, imageBase64);
+                    }
+                }
+            }
+            return bodyHtml;
         }
     }
 }

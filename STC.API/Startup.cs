@@ -51,6 +51,14 @@ namespace STC.API
             services.AddScoped<IAccountData, SqlAccountData>();
             services.AddScoped<ITicketData, SqlTicketData>();
             services.AddScoped<IUserRoleData, SqlUserRoleData>();
+
+            services.AddScoped<ICategoryData, SqlCategoryData>();
+            services.AddScoped<IComponentData, SqlComponentData>();
+            services.AddScoped<IComponentTypeData, SqlComponentTypeData>();
+            services.AddScoped<IComponentVersionData, SqlComponentVersion>();
+            services.AddScoped<IStageData, SqlStageData>();
+            services.AddScoped<IOpportunityData, SqlOpportunityData>();
+
             services.AddTransient<IUtils, Utils>();
 
             //config mvc

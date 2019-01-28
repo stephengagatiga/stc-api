@@ -164,7 +164,11 @@ namespace STC.API.Controllers
 
                 await _utils.SendReply(name, reply.To, $"[ID:{ticketId}] {ticket.Subject}", reply.Message, email);
 
-                return NoContent();
+                return Ok(new
+                {
+                    name,
+                    email
+                });
             }
             return BadRequest();
         }

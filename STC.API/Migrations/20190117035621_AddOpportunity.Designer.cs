@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using STC.API.Data;
 
 namespace STC.API.Migrations
 {
     [DbContext(typeof(STCDbContext))]
-    partial class STCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190117035621_AddOpportunity")]
+    partial class AddOpportunity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,8 +143,6 @@ namespace STC.API.Migrations
 
                     b.Property<int>("OpportunityId");
 
-                    b.Property<int?>("OpportunityId1");
-
                     b.Property<bool>("POC");
 
                     b.Property<decimal>("PricePerUnit")
@@ -180,8 +180,6 @@ namespace STC.API.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.HasIndex("OpportunityId");
-
-                    b.HasIndex("OpportunityId1");
 
                     b.HasIndex("ProductId");
 
@@ -342,9 +340,6 @@ namespace STC.API.Migrations
                     b.Property<DateTime>("Created");
 
                     b.Property<int>("CreatedById");
-
-                    b.Property<decimal>("DealSize")
-                        .HasColumnType("decimal(12, 4)");
 
                     b.Property<DateTime>("Modified");
 
@@ -625,11 +620,6 @@ namespace STC.API.Migrations
                     b.HasOne("STC.API.Entities.OpportunityEntity.Opportunity", "Opportunity")
                         .WithMany()
                         .HasForeignKey("OpportunityId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.OpportunityEntity.Opportunity")
-                        .WithMany("Components")
-                        .HasForeignKey("OpportunityId1")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("STC.API.Entities.ProductEntity.Product", "Product")

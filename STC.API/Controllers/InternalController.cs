@@ -23,13 +23,15 @@ namespace STC.API.Controllers
         private IUserData _userData;
         private IProductData _productData;
         private IProductAssignmentData _productAssignmentData;
+        private IUtils _utils;
 
-        public InternalController(IUserRoleData userRoleData, IUserData userData, IProductData productData, IProductAssignmentData productAssignmentData)
+        public InternalController(IUserRoleData userRoleData, IUserData userData, IProductData productData, IProductAssignmentData productAssignmentData, IUtils utils)
         {
             _userRoleData = userRoleData;
             _userData = userData;
             _productData = productData;
             _productAssignmentData = productAssignmentData;
+            _utils = utils;
         }
    
         [AllowAnonymous]
@@ -51,31 +53,38 @@ namespace STC.API.Controllers
             var role = _userRoleData.GetRole(userInThisProducts.Role);
             if (role == null)
             {
-                return Ok(new { Error = "No role found" });
+                return Ok(new { Message = "No Role Found", Users = new List<User>() });
             }
 
             var users = _userData.GetUsersInThisRole(role.Id);
             if (users.Count == 0)
             {
-                return Ok(new { Error = "No user found in this role" });
+                return Ok(new { Message = "No User Found", Users = new List<User>() });
             }
 
             var products = _productData.GetAllProductsWithThisName(userInThisProducts.Products);
             if (products.Count == 0)
             {
-                return Ok(new { Error = "No product found in this name"});
+                return Ok(new { Message = "No Product Found", Users = new List<User>() });
             }
 
             var productAssignments = _productAssignmentData.GetAllUserInThisProducts(products);
 
             if (productAssignments.Count == 0)
             {
-                return Ok(new { Error = "No user found in this product" });
+                return Ok(new {
+                    Message = "No User Assigned",
+                    Users = new List<User>()
+                    });
             }
 
             var filteredUsers = users.Where(u => u.Products != null);
 
-            return Ok(filteredUsers);
+            return Ok(new
+            {
+                Message = "Success",
+                Users = filteredUsers
+            });
         }
 
         [AllowAnonymous]
@@ -89,6 +98,15 @@ namespace STC.API.Controllers
                 Console.WriteLine(content);
                 return content;
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("testsend")]
+        public IActionResult TestSend()
+        {
+            _utils.TestSend();
+            return Ok();
         }
     }
 
