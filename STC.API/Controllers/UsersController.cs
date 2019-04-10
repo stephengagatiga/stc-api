@@ -16,10 +16,12 @@ namespace STC.API.Controllers
     public class UsersController : Controller
     {
         private IUserData _userData;
+        private IUserRoleData _userRoleData;
 
-        public UsersController(IUserData userData)
+        public UsersController(IUserData userData, IUserRoleData userRoleData)
         {
             _userData = userData;
+            _userRoleData = userRoleData;
         }
 
 
@@ -95,11 +97,31 @@ namespace STC.API.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{userId}")]
-        public IActionResult GetUser(int userId)
+        [HttpGet("{id}")]
+        public IActionResult GetUser(string id)
         {
-            var user = _userData.GetUserInfo(userId);
+            int intId = 0;
+            User user = null;
+            if (Int32.TryParse(id, out intId))
+            {
+                user = _userData.GetUserInfo(intId);
+            } else
+            {
+                user = _userData.GetUserInfo(id);
+            }
             return Ok(user);
+        }
+
+        [HttpPost("getbyroles")]
+        public IActionResult GetUserInRole([FromBody] UserInRoleDto userInRoleDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var roles = _userRoleData.GetRolesByName(userInRoleDto.Roles);
+                var users = _userData.GetUsersInThisRoles(roles);
+                return Ok(users);
+            }
+            return BadRequest();
         }
 
         [AllowAnonymous]

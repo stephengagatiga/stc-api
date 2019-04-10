@@ -68,7 +68,7 @@ namespace STC.API
                     //add formatter for xml
                     mvcOptions.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                     //require https only
-                    mvcOptions.Filters.Add(typeof(RequireHttpsAttribute));
+                    //mvcOptions.Filters.Add(typeof(RequireHttpsAttribute));
                 })
                 .AddJsonOptions(jsonOptions =>
                 {

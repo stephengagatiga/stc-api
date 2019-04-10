@@ -11,6 +11,7 @@ namespace STC.API.Services
     {
         ICollection<UserRole> GetAllUserRoles();
         ICollection<UserRole> GetUserRoles();
+        ICollection<UserRole> GetRolesByName(string[] roleNames);
         UserRole AddRole(NewUserRole newUserRole);
         UserRole GetRole(string name);
         UserRole GetRole(int roleId);

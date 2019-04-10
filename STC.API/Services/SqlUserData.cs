@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using STC.API.Data;
 using STC.API.Entities.UserEntity;
+using STC.API.Entities.UserRoleEntity;
 using STC.API.Models.User;
 using System;
 using System.Collections.Generic;
@@ -70,6 +71,17 @@ namespace STC.API.Services
             return user;
         }
 
+        public User GetUserInfo(string objectId)
+        {
+            var user = _context.Users
+                                    .Where(u => u.ObjectId == objectId)
+                                    .Include(u => u.Role)
+                                    .Include(u => u.Supervisor)
+                                    .FirstOrDefault();
+
+            return user;
+        }
+
         public User GetUser(UpdateUserDto updateUser, int userId)
         {
             var user = _context.Users
@@ -97,6 +109,7 @@ namespace STC.API.Services
         {
             var users = _context.Users
                                     .Where(u => u.Active == true)
+                                    .Include(u => u.Role)
                                     .OrderBy(u => u.FirstName)
                                     .ToList();
             return users;
@@ -120,6 +133,14 @@ namespace STC.API.Services
         {
             var users = _context.Users.Where(u => u.RoleId == roleId && u.Active == true)
                                         .ToList();
+            return users;
+        }
+
+        public ICollection<User> GetUsersInThisRoles(ICollection<UserRole> userRoles)
+        {
+            var users = _context.Users
+                                    .Where(u => userRoles.Any(ur => ur.Id == u.RoleId))
+                                    .ToList();
             return users;
         }
     }

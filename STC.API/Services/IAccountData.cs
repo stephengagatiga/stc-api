@@ -22,5 +22,7 @@ namespace STC.API.Services
         void EditAccountContact(AccountContact accountContact, AccountContactEditDto accountContactEditDto);
 
         AccountIndustry AddIndustry(AccountIndustryNewDto newIndustry);
+        ICollection<AccountIndustry> GetAllIndustry();
+
     }
 }

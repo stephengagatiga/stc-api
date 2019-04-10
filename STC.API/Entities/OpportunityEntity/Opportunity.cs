@@ -18,11 +18,7 @@ namespace STC.API.Entities.OpportunityEntity
         [ForeignKey("AccountId")]
         public Account Account { get; set; }
 
-        [Column(TypeName = "decimal(12, 4)")]
-        public decimal DealSize { get; set; }
-
         public string BigDealCode { get; set; }
-        public int TotalQty { get; set; }
         public DateTime Created { get; set; }
 
         public int CreatedById { get; set; }

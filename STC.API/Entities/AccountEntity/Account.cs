@@ -26,7 +26,7 @@ namespace STC.API.Entities.AccountEntity
         [DataType(DataType.Text)]
         public string ContactDetails { get; set; }
 
-        public int AccountIndustryId { get; set; }
+        public int? AccountIndustryId { get; set; }
         [ForeignKey("AccountIndustryId")]
         public AccountIndustry Industry { get; set; }
 

@@ -51,12 +51,19 @@ namespace STC.API.Services
             return role;
         }
 
+        public ICollection<UserRole> GetRolesByName(string[] roleNames)
+        {
+            var roles = _context.UserRoles
+                                        .Where(u => roleNames.Any(rn => rn.ToUpper().Trim() == u.Name.ToUpper().Trim()) && u.Active == true)
+                                        .ToList();
+            return roles;
+        }
+
         public ICollection<UserRole> GetUserRoles()
         {
             var roles = _context.UserRoles
                                     .Where(r => r.Active == true)
                                     .OrderBy(r => r.Name).ToList();
-
             return roles;
         }
 

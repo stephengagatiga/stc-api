@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using STC.API.Data;
 
 namespace STC.API.Migrations
 {
     [DbContext(typeof(STCDbContext))]
-    partial class STCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190304052017_SetAccountIndustryOptional")]
+    partial class SetAccountIndustryOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,7 +126,7 @@ namespace STC.API.Migrations
 
                     b.Property<int>("CategoryId");
 
-                    b.Property<int?>("ComponentTypeId");
+                    b.Property<int>("ComponentTypeId");
 
                     b.Property<decimal>("CostPerUnit")
                         .HasColumnType("decimal(12, 4)");
@@ -168,7 +170,8 @@ namespace STC.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountExecutiveId");
+                    b.HasIndex("AccountExecutiveId")
+                        .IsUnique();
 
                     b.HasIndex("CategoryId");
 
@@ -342,11 +345,16 @@ namespace STC.API.Migrations
 
                     b.Property<int>("CreatedById");
 
+                    b.Property<decimal>("DealSize")
+                        .HasColumnType("decimal(12, 4)");
+
                     b.Property<DateTime>("Modified");
 
                     b.Property<int>("ModifiedById");
 
                     b.Property<int>("Status");
+
+                    b.Property<int>("TotalQty");
 
                     b.HasKey("Id");
 
@@ -591,8 +599,8 @@ namespace STC.API.Migrations
             modelBuilder.Entity("STC.API.Entities.ComponentEntity.Component", b =>
                 {
                     b.HasOne("STC.API.Entities.UserEntity.User", "AccountExecutive")
-                        .WithMany()
-                        .HasForeignKey("AccountExecutiveId")
+                        .WithOne()
+                        .HasForeignKey("STC.API.Entities.ComponentEntity.Component", "AccountExecutiveId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("STC.API.Entities.ComponentEntity.Category", "Category")

@@ -23,7 +23,7 @@ namespace STC.API.Entities.ComponentEntity
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
-        public int ComponentTypeId { get; set; }
+        public int? ComponentTypeId { get; set; }
         [ForeignKey("ComponentTypeId")]
         public ComponentType ComponentType { get; set; }
 
@@ -35,7 +35,7 @@ namespace STC.API.Entities.ComponentEntity
         [ForeignKey("SolutionsArchitectId")]
         public User SolutionsArchitect { get; set; }
 
-        public DateTime TargetCloseMonth { get; set; }
+        public DateTime? TargetCloseDate { get; set; }
 
         public int StageId { get; set; }
         [ForeignKey("StageId")]
@@ -53,8 +53,8 @@ namespace STC.API.Entities.ComponentEntity
         [Column(TypeName = "decimal(12, 4)")]
         public decimal CostPerUnit { get; set; }
 
-        public bool POC { get; set; }
-        public DateTime Validity { get; set; }
+        public bool Poc { get; set; }
+        public DateTime? ValidityDate { get; set; }
         public Status Status { get; set; }
         public string Remarks { get; set; }
         public DateTime Created { get; set; }

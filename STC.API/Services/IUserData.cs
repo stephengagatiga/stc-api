@@ -1,4 +1,5 @@
 ﻿using STC.API.Entities.UserEntity;
+using STC.API.Entities.UserRoleEntity;
 using STC.API.Models.User;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,13 @@ namespace STC.API.Services
         User GetUser(int userId);
         User AddUser(NewUserDto newUserDto);
         User GetUserInfo(int userId);
+        User GetUserInfo(string objectId);
         User GetUser(UpdateUserDto updateUser, int userId);
         void UpdateUser(UpdateUserDto updateUser, User user);
         User CheckUserIfExistByEmailOrObjectId(string email, string objectId);
         ICollection<User> GetUsers();
         ICollection<User> GetUsersInThisRole(int roleId);
+        ICollection<User> GetUsersInThisRoles(ICollection<UserRole> userRoles);
         ICollection<User> GetAllUsers();
 
         void SaveChanges();

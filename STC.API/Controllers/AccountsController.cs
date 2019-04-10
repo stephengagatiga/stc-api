@@ -198,5 +198,11 @@ namespace STC.API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("industries")]
+        public IActionResult GetAllIndustry()
+        {
+            return Ok(_accountData.GetAllIndustry());
+        }
     }
 }

@@ -66,7 +66,9 @@ namespace STC.API.Services
         }
         public ICollection<Account> GetAccounts()
         {
-            var accounts = _context.Accounts.OrderBy(a => a.Name).ToList();
+            var accounts = _context.Accounts.OrderBy(a => a.Name)
+                            .Include(ac => ac.Industry)    
+                            .ToList();
             return accounts;
         }
 
@@ -137,6 +139,11 @@ namespace STC.API.Services
             {
                 return null;
             }
+        }
+
+        public ICollection<AccountIndustry> GetAllIndustry()
+        {
+            return _context.AccountIndustries.OrderBy(a => a.Name).ToList();
         }
     }
 }

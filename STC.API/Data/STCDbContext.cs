@@ -116,7 +116,7 @@ namespace STC.API.Data
 
             modelBuilder.Entity<Component>()
                 .HasOne(o => o.AccountExecutive)
-                .WithOne()
+                .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Component>()
@@ -143,6 +143,7 @@ namespace STC.API.Data
                 .HasOne(o => o.Stage)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
+               
 
             modelBuilder.Entity<ComponentVersion>()
                 .HasOne(o => o.Component)
