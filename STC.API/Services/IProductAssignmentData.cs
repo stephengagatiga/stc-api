@@ -15,5 +15,7 @@ namespace STC.API.Services
         ICollection<User> GetAllUserProductAssignment();
         ICollection<ProductAssignment> GetAllUserInThisProducts(ICollection<Product> products);
         void RemoveUserProduct(ProductAssignment productAssignment);
+        ICollection<User> GetUsersInThisProductId(int productId);
+
     }
 }

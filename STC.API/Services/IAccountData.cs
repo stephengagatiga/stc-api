@@ -9,7 +9,7 @@ namespace STC.API.Services
 {
     public interface IAccountData
     {
-        Account AddAccount(AccountNewDto accountNewDto);
+        AccountSuccessDto AddAccount(AccountNewDto accountNewDto);
         ICollection<Account> GetAccounts();
         Account GetAccountById(int accountId);
         Account GetAccountAllData(int accountId);

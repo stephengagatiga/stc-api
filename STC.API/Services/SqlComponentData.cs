@@ -17,5 +17,10 @@ namespace STC.API.Services
         {
             throw new NotImplementedException();
         }
+
+        public ICollection<Component> GetComponents()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

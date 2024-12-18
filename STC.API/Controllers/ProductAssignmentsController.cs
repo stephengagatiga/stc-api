@@ -52,5 +52,12 @@ namespace STC.API.Controllers
             return NotFound();
         }
 
+        [HttpGet("{productId}/users")]
+        public IActionResult GetUsersByProductAssignment(int productId)
+        {
+            var users = _productAssignemtData.GetUsersInThisProductId(productId);
+            return Ok(users);
+        }
+
     }
 }

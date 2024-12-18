@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="IIS Web Application Name" description="" value="stc-api" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^E:\\dev\\STC\.API\\STC\.API\\obj\\Release\\netcoreapp2\.1\\PubTmp\\Out\\$" />
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\MyFiles\\dev\\STC\.API\\STC\.API\\obj\\Release\\netcoreapp2\.1\\PubTmp\\Out\\$" />
   </parameter>
 </parameters>

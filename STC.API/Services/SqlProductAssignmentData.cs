@@ -61,6 +61,26 @@ namespace STC.API.Services
             return productAssignment;
         }
 
+        public ICollection<User> GetUsersInThisProductId(int productId)
+        {
+            var pa = _context.ProductAssignments.Where(p => p.ProductId == productId)
+                                    .Include(u => u.User)
+                                    .ToList();
+
+            List<User> users = new List<User>();
+
+            if (pa != null)
+            {
+                foreach (var item in pa)
+                {
+                    users.Add(item.User);
+                }
+            }
+
+
+            return users;
+        }
+
         public void RemoveUserProduct(ProductAssignment productAssignment)
         {
             _context.ProductAssignments.Remove(productAssignment);

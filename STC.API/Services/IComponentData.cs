@@ -10,5 +10,6 @@ namespace STC.API.Services
     {
         Component AddComponent();
         Component EditComponent();
+        ICollection<Component> GetComponents();
     }
 }

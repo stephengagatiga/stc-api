@@ -122,8 +122,12 @@ namespace STC.API.Controllers
                 ticket.Priority = (TicketPriority)ticketEditDto.Priority;
                 ticket.Products = ticketEditDto.Products;
 
-                _ticketData.UpdateTicket(ticket);
+                if (ticket.Status == TicketStatus.Closed || ticket.Status == TicketStatus.Solved)
+                {
+                    ticket.ClosedOn = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time"));
+                }
 
+                _ticketData.UpdateTicket(ticket);
                 return NoContent();
             }
             return BadRequest();

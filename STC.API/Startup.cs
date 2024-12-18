@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using STC.API.Data;
 using STC.API.Services;
 
@@ -59,8 +62,26 @@ namespace STC.API
             services.AddScoped<IStageData, SqlStageData>();
             services.AddScoped<IOpportunityData, SqlOpportunityData>();
 
+            services.AddScoped<ICashReimbursementData, SqlCashReimbursementData>();
+            services.AddScoped<IReimburseeData, SqlReimburseeData>();
+            services.AddScoped<IUserPermissionData, SqlPermissionData>();
+
+            services.AddScoped<IRequestData, SqlRequestData>();
+
+            services.AddScoped<IPOPendingData, SqlPOPendingData>();
+            services.AddScoped<IPOAuditTrailData, SqlPOAuditTrailData>();
+            services.AddScoped<IPOGuidStatusData, SqlPOGuidStatusData>();
+
+
             services.AddTransient<IUtils, Utils>();
 
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
+            //services.AddControllers().AddXmlSerializerFormatters();
+
+            services.AddSingleton(typeof (IInMemoryData), new InMemoryData());
+
+            services.AddCors();
             //config mvc
             services.AddMvc()
                 .AddMvcOptions(mvcOptions =>
@@ -69,12 +90,18 @@ namespace STC.API
                     mvcOptions.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                     //require https only
                     //mvcOptions.Filters.Add(typeof(RequireHttpsAttribute));
+                    mvcOptions.FormatterMappings.SetMediaTypeMappingForFormat
+                        ("xml", MediaTypeHeaderValue.Parse("application/xml"));
+                    mvcOptions.FormatterMappings.SetMediaTypeMappingForFormat
+                        ("config", MediaTypeHeaderValue.Parse("application/xml"));
+                    mvcOptions.FormatterMappings.SetMediaTypeMappingForFormat
+                        ("js", MediaTypeHeaderValue.Parse("application/json"));
                 })
                 .AddJsonOptions(jsonOptions =>
                 {
-                    //I forgout about this
                     jsonOptions.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                });
+                })
+                    .AddXmlSerializerFormatters();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,7 +112,7 @@ namespace STC.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStatusCodePages();
             app.UseAuthentication();
             app.UseMvc();

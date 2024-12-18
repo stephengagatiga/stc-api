@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using STC.API.Models.User;
 using STC.API.Entities.UserEntity;
+using Microsoft.AspNetCore.Http;
 
 namespace STC.API.Controllers
 {
@@ -132,6 +133,7 @@ namespace STC.API.Controllers
             return Ok(users);
         }
 
+
         [HttpPost("{userId}")]
         public IActionResult UpdateUser([FromBody] UpdateUserDto updateUser, int userId)
         {
@@ -143,5 +145,43 @@ namespace STC.API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("{userId}/active/{active}")]
+        public IActionResult ChangeUserStatus(int userId, int active)
+        {
+            if (active != 1 && active != 0)
+            {
+                return BadRequest();
+            }
+            var user = _userData.GetUser(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            _userData.EnableUser(user, active == 1 ? true : false);
+            return Ok();
+        }
+
+        [HttpGet("permissions")]
+        public IActionResult GetUsersWithPermissions()
+        {
+            var result = _userData.GetAllUsersWithPermissions();
+            return Ok(result);
+        }
+
+        [HttpGet("{objectId}/permissions")]
+        public IActionResult GetUsersWithPermissions(string objectId)
+        {
+            var result = _userData.GetUserWithPermission(objectId);
+            return Ok(result);
+        }
+
+        [HttpGet("permissions/{permission}")]
+        public IActionResult GetUsersThisPermissions(Permission permission)
+        {
+            var result = _userData.GetAllUsersThisPermission(permission);
+            return Ok(result);
+        }
+
     }
 }

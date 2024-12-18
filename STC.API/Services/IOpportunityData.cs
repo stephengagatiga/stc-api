@@ -10,12 +10,16 @@ namespace STC.API.Services
 {
     public interface IOpportunityData
     {
-        Opportunity AddOpportunity(NewOpportunityDto newOpportunityDto);
+        NewOpportunitySuccessDto AddOpportunity(NewOpportunityDto newOpportunityDto);
         ICollection<Opportunity> GetOpportunities();
+        Opportunity GetOpportunity(int opportunityId);
         ICollection<Category> GetCategories();
         ICollection<ComponentType> GetComponentTypes();
         ICollection<Stage> GetStages();
         Component GetComponent(int componentId);
-        Component UpdateComponent(EditComponentDto editComponent);
+        EditComponentSuccessDto UpdateComponent(EditComponentDto editComponent);
+        AddComponentResultDto AddComponent(AddComponentDto addComponentDto, Opportunity opportunity);
+        bool SaveMoveComponents(MoveComponentsDto moveComponentsDto);
+        ICollection<FilteredComponentDto> GetComponentsByEmail(string email);
     }
 }

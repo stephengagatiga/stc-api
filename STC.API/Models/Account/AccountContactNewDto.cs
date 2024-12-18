@@ -26,6 +26,6 @@ namespace STC.API.Models.Account
 
         [Required]
         public bool PrimaryContact { get; set; }
-
+        
     }
 }

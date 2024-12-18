@@ -11,24 +11,18 @@ namespace STC.API.Models.Opportunity
     {
         [Required]
         public int AccountId { get; set; }
-
+        public string AccountName { get; set; }
         public string BigDealCode { get; set; }
-
-        [Required]
-        public string Created { get; set; }
-
+        public decimal DealSize { get; set; }
+        public decimal GrossProfit { get; set; }
         [Required]
         public int CreatedById { get; set; }
-
-        [Required]
-        public string Modified { get; set; }
-
         [Required]
         public int ModifiedById { get; set; }
-
         [Required]
         public Status Status { get; set; }
-
+        public string CreatedByName { get; set; }
+        public string NotifyToEmail { get; set; }
         [Required]
         public ICollection<NewComponentNoOppIdDto> Components { get; set; }
 

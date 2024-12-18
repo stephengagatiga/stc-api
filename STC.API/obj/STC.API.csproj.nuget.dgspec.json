@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\dev\\STC.API\\STC.API\\STC.API.csproj": {}
+    "C:\\MyFiles\\dev\\STC.API\\STC.API\\STC.API.csproj": {}
   },
   "projects": {
-    "E:\\dev\\STC.API\\STC.API\\STC.API.csproj": {
+    "C:\\MyFiles\\dev\\STC.API\\STC.API\\STC.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\dev\\STC.API\\STC.API\\STC.API.csproj",
+        "projectUniqueName": "C:\\MyFiles\\dev\\STC.API\\STC.API\\STC.API.csproj",
         "projectName": "STC.API",
-        "projectPath": "E:\\dev\\STC.API\\STC.API\\STC.API.csproj",
-        "packagesPath": "C:\\Users\\phen.STC-SJSG\\.nuget\\packages\\",
-        "outputPath": "E:\\dev\\STC.API\\STC.API\\obj\\",
+        "projectPath": "C:\\MyFiles\\dev\\STC.API\\STC.API\\STC.API.csproj",
+        "packagesPath": "C:\\Users\\phen\\.nuget\\packages\\",
+        "outputPath": "C:\\MyFiles\\dev\\STC.API\\STC.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\phen.STC-SJSG\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\phen\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -29,6 +29,7 @@
         },
         "frameworks": {
           "netcoreapp2.1": {
+            "targetAlias": "netcoreapp2.1",
             "projectReferences": {}
           }
         },
@@ -40,6 +41,7 @@
       },
       "frameworks": {
         "netcoreapp2.1": {
+          "targetAlias": "netcoreapp2.1",
           "dependencies": {
             "MailKit": {
               "target": "Package",
@@ -52,16 +54,31 @@
               "autoReferenced": true
             },
             "Microsoft.NETCore.App": {
+              "suppressParent": "All",
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[2.1.9, )"
+            },
+            "RndUsr0.DinkToPdf": {
+              "target": "Package",
+              "version": "[1.0.9-20190207.1, )"
             }
           },
           "imports": [
-            "net461"
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
           ],
           "assetTargetFallback": true,
-          "warn": true
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

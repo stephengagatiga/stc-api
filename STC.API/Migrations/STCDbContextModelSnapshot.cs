@@ -15,7 +15,7 @@ namespace STC.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -26,6 +26,8 @@ namespace STC.API.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("AccountIndustryId");
+
+                    b.Property<bool>("Active");
 
                     b.Property<string>("Address");
 
@@ -99,6 +101,119 @@ namespace STC.API.Migrations
                     b.ToTable("AccountIndustries");
                 });
 
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.Expense", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ExpenseCategoryId");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpenseCategoryId");
+
+                    b.ToTable("Expense");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.ExpenseCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExpenseCategory");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.Reimbursee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BankAccountNumber")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired();
+
+                    b.Property<string>("LastName")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reimbursees");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.UserExpense", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(12, 2)");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("ExepenseId");
+
+                    b.Property<string>("Remarks");
+
+                    b.Property<int>("UserReimbursementId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExepenseId");
+
+                    b.HasIndex("UserReimbursementId");
+
+                    b.ToTable("UserExpenses");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.UserReimbursement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CreatedById");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<int?>("ProcessById");
+
+                    b.Property<DateTime?>("ProcessOn");
+
+                    b.Property<string>("ReferenceNumber");
+
+                    b.Property<int>("ReimburseeId");
+
+                    b.Property<DateTime>("ReimbursementDate");
+
+                    b.Property<int>("ReimbursementStatus");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ProcessById");
+
+                    b.HasIndex("ReimburseeId");
+
+                    b.ToTable("UserReimbursements");
+                });
+
             modelBuilder.Entity("STC.API.Entities.ComponentEntity.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -126,6 +241,8 @@ namespace STC.API.Migrations
 
                     b.Property<int?>("ComponentTypeId");
 
+                    b.Property<int?>("ComponentVersionId");
+
                     b.Property<decimal>("CostPerUnit")
                         .HasColumnType("decimal(12, 4)");
 
@@ -141,8 +258,6 @@ namespace STC.API.Migrations
 
                     b.Property<int>("OpportunityId");
 
-                    b.Property<int?>("OpportunityId1");
-
                     b.Property<bool>("Poc");
 
                     b.Property<decimal>("PricePerUnit")
@@ -153,6 +268,8 @@ namespace STC.API.Migrations
                     b.Property<int>("Qty");
 
                     b.Property<string>("Remarks");
+
+                    b.Property<Guid>("RequestId");
 
                     b.Property<int>("SolutionsArchitectId");
 
@@ -179,8 +296,6 @@ namespace STC.API.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.HasIndex("OpportunityId");
-
-                    b.HasIndex("OpportunityId1");
 
                     b.HasIndex("ProductId");
 
@@ -224,16 +339,10 @@ namespace STC.API.Migrations
 
                     b.Property<int>("ComponentId");
 
-                    b.Property<int?>("ComponentId1");
-
-                    b.Property<int>("ComponentTypeId");
+                    b.Property<int?>("ComponentTypeId");
 
                     b.Property<decimal>("CostPerUnit")
                         .HasColumnType("decimal(12, 4)");
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<int>("CreatedById");
 
                     b.Property<string>("Description");
 
@@ -254,42 +363,21 @@ namespace STC.API.Migrations
 
                     b.Property<string>("Remarks");
 
+                    b.Property<Guid>("RequestId");
+
                     b.Property<int>("SolutionsArchitectId");
 
                     b.Property<int>("StageId");
 
                     b.Property<int>("Status");
 
-                    b.Property<DateTime>("TargetCloseMonth");
+                    b.Property<DateTime?>("TargetCloseMonth");
 
-                    b.Property<DateTime>("Validity");
+                    b.Property<DateTime?>("Validity");
 
                     b.Property<int>("VersionNumber");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountExecutiveId")
-                        .IsUnique();
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("ComponentId");
-
-                    b.HasIndex("ComponentId1");
-
-                    b.HasIndex("ComponentTypeId");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("OpportunityId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SolutionsArchitectId");
-
-                    b.HasIndex("StageId");
 
                     b.ToTable("ComponentVersions");
                 });
@@ -346,6 +434,8 @@ namespace STC.API.Migrations
 
                     b.Property<int>("ModifiedById");
 
+                    b.Property<Guid>("RequestId");
+
                     b.Property<int>("Status");
 
                     b.HasKey("Id");
@@ -357,6 +447,187 @@ namespace STC.API.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.ToTable("Opportunities");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POAuditTrail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateAdded");
+
+                    b.Property<string>("Message")
+                        .IsRequired();
+
+                    b.Property<int>("POPendingId");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("POPendingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("POAuditTrails");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POGuidStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddedOn");
+
+                    b.Property<DateTime>("ModifiedOn");
+
+                    b.Property<string>("POData");
+
+                    b.Property<Guid>("POGuid");
+
+                    b.Property<int>("POStatus");
+
+                    b.Property<string>("RequestorEmail");
+
+                    b.Property<string>("RequestorName");
+
+                    b.Property<string>("SendTOs");
+
+                    b.Property<Guid>("TrackerId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("POGuidStatus");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POGuidStatusAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ContentType");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<byte[]>("File")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("POGuidStatusId");
+
+                    b.Property<long>("Size");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("POGuidStatusId");
+
+                    b.ToTable("POGuidStatusAttachments");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POPending", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("ApprovedOn");
+
+                    b.Property<string>("ApproverEmail");
+
+                    b.Property<int?>("ApproverId");
+
+                    b.Property<string>("ApproverJobTitle");
+
+                    b.Property<string>("ApproverName");
+
+                    b.Property<DateTime?>("CancelledOn");
+
+                    b.Property<int?>("ContactPersonId");
+
+                    b.Property<string>("ContactPersonName");
+
+                    b.Property<int?>("CreatedById")
+                        .IsRequired();
+
+                    b.Property<string>("CreatedByName")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("Currency");
+
+                    b.Property<string>("CustomerName");
+
+                    b.Property<decimal>("Discount");
+
+                    b.Property<DateTime?>("EstimatedArrival");
+
+                    b.Property<string>("EstimatedArrivalString");
+
+                    b.Property<Guid>("Guid");
+
+                    b.Property<bool>("HasBeenApproved");
+
+                    b.Property<string>("InternalNote");
+
+                    b.Property<string>("POPendingItemsJsonString");
+
+                    b.Property<DateTime?>("ReceivedOn");
+
+                    b.Property<string>("ReferenceNumber");
+
+                    b.Property<string>("Remarks");
+
+                    b.Property<string>("RequestorEmail")
+                        .IsRequired();
+
+                    b.Property<string>("RequestorName")
+                        .IsRequired();
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("SupplierAddress");
+
+                    b.Property<int?>("SupplierId");
+
+                    b.Property<string>("SupplierName");
+
+                    b.Property<string>("TextLineBreakCount");
+
+                    b.Property<decimal>("Total");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("POPendings");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POPendingItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("POPendingId");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<int>("Quantity");
+
+                    b.Property<decimal>("Total");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("POPendingId");
+
+                    b.ToTable("POPendingItems");
                 });
 
             modelBuilder.Entity("STC.API.Entities.ProductAssignmentEntity.ProductAssignment", b =>
@@ -423,6 +694,29 @@ namespace STC.API.Migrations
                     b.HasIndex("PrincipalId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.RequestEntity.Request", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<int>("ImplementedBy");
+
+                    b.Property<DateTime>("ImplementedOn");
+
+                    b.Property<int>("RequestAction");
+
+                    b.Property<int>("RequestSubject");
+
+                    b.Property<int>("RequestType");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Request");
                 });
 
             modelBuilder.Entity("STC.API.Entities.TicketEntity.Ticket", b =>
@@ -557,6 +851,23 @@ namespace STC.API.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("STC.API.Entities.UserEntity.UserPermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Permission");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserPermissions");
+                });
+
             modelBuilder.Entity("STC.API.Entities.UserRoleEntity.UserRole", b =>
                 {
                     b.Property<int>("Id")
@@ -588,6 +899,45 @@ namespace STC.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.Expense", b =>
+                {
+                    b.HasOne("STC.API.Entities.CashReimbursementEntity.ExpenseCategory", "ExpenseCategory")
+                        .WithMany()
+                        .HasForeignKey("ExpenseCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.UserExpense", b =>
+                {
+                    b.HasOne("STC.API.Entities.CashReimbursementEntity.Expense", "Expense")
+                        .WithMany()
+                        .HasForeignKey("ExepenseId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("STC.API.Entities.CashReimbursementEntity.UserReimbursement", "UserReimbursement")
+                        .WithMany("UserExpenses")
+                        .HasForeignKey("UserReimbursementId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("STC.API.Entities.CashReimbursementEntity.UserReimbursement", b =>
+                {
+                    b.HasOne("STC.API.Entities.UserEntity.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("STC.API.Entities.UserEntity.User", "ProcessBy")
+                        .WithMany()
+                        .HasForeignKey("ProcessById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("STC.API.Entities.CashReimbursementEntity.Reimbursee", "Reimbursee")
+                        .WithMany()
+                        .HasForeignKey("ReimburseeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("STC.API.Entities.ComponentEntity.Component", b =>
                 {
                     b.HasOne("STC.API.Entities.UserEntity.User", "AccountExecutive")
@@ -616,14 +966,9 @@ namespace STC.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("STC.API.Entities.OpportunityEntity.Opportunity", "Opportunity")
-                        .WithMany()
-                        .HasForeignKey("OpportunityId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.OpportunityEntity.Opportunity")
                         .WithMany("Components")
-                        .HasForeignKey("OpportunityId1")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("OpportunityId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("STC.API.Entities.ProductEntity.Product", "Product")
                         .WithMany()
@@ -649,63 +994,6 @@ namespace STC.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("STC.API.Entities.ComponentEntity.ComponentVersion", b =>
-                {
-                    b.HasOne("STC.API.Entities.UserEntity.User", "AccountExecutive")
-                        .WithOne()
-                        .HasForeignKey("STC.API.Entities.ComponentEntity.ComponentVersion", "AccountExecutiveId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.ComponentEntity.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.ComponentEntity.Component", "Component")
-                        .WithMany()
-                        .HasForeignKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("STC.API.Entities.ComponentEntity.Component")
-                        .WithMany("Versions")
-                        .HasForeignKey("ComponentId1");
-
-                    b.HasOne("STC.API.Entities.ComponentEntity.ComponentType", "ComponentType")
-                        .WithMany()
-                        .HasForeignKey("ComponentTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.UserEntity.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("STC.API.Entities.UserEntity.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.OpportunityEntity.Opportunity", "Opportunity")
-                        .WithMany()
-                        .HasForeignKey("OpportunityId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.ProductEntity.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.UserEntity.User", "SolutionsArchitect")
-                        .WithMany()
-                        .HasForeignKey("SolutionsArchitectId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("STC.API.Entities.ComponentEntity.Stage", "Stage")
-                        .WithMany()
-                        .HasForeignKey("StageId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("STC.API.Entities.OpportunityEntity.Opportunity", b =>
                 {
                     b.HasOne("STC.API.Entities.AccountEntity.Account", "Account")
@@ -721,6 +1009,35 @@ namespace STC.API.Migrations
                     b.HasOne("STC.API.Entities.UserEntity.User", "ModifiedBy")
                         .WithMany()
                         .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POAuditTrail", b =>
+                {
+                    b.HasOne("STC.API.Entities.POEntity.POPending", "POPending")
+                        .WithMany("POAuditTrails")
+                        .HasForeignKey("POPendingId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("STC.API.Entities.UserEntity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POGuidStatusAttachment", b =>
+                {
+                    b.HasOne("STC.API.Entities.POEntity.POGuidStatus", "POGuidStatus")
+                        .WithMany("POGuidStatusAttachment")
+                        .HasForeignKey("POGuidStatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("STC.API.Entities.POEntity.POPendingItem", b =>
+                {
+                    b.HasOne("STC.API.Entities.POEntity.POPending", "POPending")
+                        .WithMany("POPendingItems")
+                        .HasForeignKey("POPendingId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -805,6 +1122,14 @@ namespace STC.API.Migrations
                     b.HasOne("STC.API.Entities.UserEntity.User", "Supervisor")
                         .WithMany()
                         .HasForeignKey("SupervisorId");
+                });
+
+            modelBuilder.Entity("STC.API.Entities.UserEntity.UserPermission", b =>
+                {
+                    b.HasOne("STC.API.Entities.UserEntity.User", "User")
+                        .WithMany("UserPermissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

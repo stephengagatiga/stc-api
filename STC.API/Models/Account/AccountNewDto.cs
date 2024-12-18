@@ -25,5 +25,8 @@ namespace STC.API.Models.Account
 
         public int TermsOfPayment { get; set; }
 
+        public string NotifToEmail { get; set; }
+        public string NotiifToName { get; set; }
+
     }
 }

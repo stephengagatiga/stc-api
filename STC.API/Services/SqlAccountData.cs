@@ -7,6 +7,8 @@ using STC.API.Entities.AccountEntity;
 using STC.API.Models.Account;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using STC.API.Entities.RequestEntity;
+using Newtonsoft.Json;
 
 namespace STC.API.Services
 {
@@ -19,7 +21,7 @@ namespace STC.API.Services
             _context = context;
         }
 
-        public Account AddAccount(AccountNewDto accountNewDto)
+        public AccountSuccessDto AddAccount(AccountNewDto accountNewDto)
         {
             var account = new Account {
                 Name = accountNewDto.Name,
@@ -28,12 +30,17 @@ namespace STC.API.Services
                 ContactDetails = accountNewDto.ContactDetails,
                 AccountIndustryId = accountNewDto.AccountIndustryId,
                 TermsOfPayment = accountNewDto.TermsOfPayment,
+                Active = false,
                 CreatedOn = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time"))
             };
             _context.Accounts.Add(account);
             _context.Entry(account).State = EntityState.Added;
+
+            account.Industry = _context.AccountIndustries.FirstOrDefault(a => a.Id == accountNewDto.AccountIndustryId);
+
             SaveChanges();
-            return account;
+
+            return new AccountSuccessDto { Account = account };
         }
         public void DeleteAccount(Account account)
         {
@@ -66,8 +73,10 @@ namespace STC.API.Services
         }
         public ICollection<Account> GetAccounts()
         {
-            var accounts = _context.Accounts.OrderBy(a => a.Name)
+            var accounts = _context.Accounts
+                            .Where(a => a.Active == true)
                             .Include(ac => ac.Industry)    
+                            .OrderBy(a => a.Name)
                             .ToList();
             return accounts;
         }

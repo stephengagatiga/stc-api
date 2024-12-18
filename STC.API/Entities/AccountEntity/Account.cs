@@ -34,6 +34,7 @@ namespace STC.API.Entities.AccountEntity
 
         [Required]
         public DateTime CreatedOn { get; set; }
+        public bool Active { get; set; }
 
         public ICollection<AccountContact> AccountContacts { get; set; }
     

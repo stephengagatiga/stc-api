@@ -13,6 +13,9 @@ using STC.API.Entities.UserEntity;
 using STC.API.Entities.ProductAssignmentEntity;
 using STC.API.Entities.ComponentEntity;
 using STC.API.Entities.OpportunityEntity;
+using STC.API.Entities.RequestEntity;
+using STC.API.Entities.CashReimbursementEntity;
+using STC.API.Entities.POEntity;
 
 namespace STC.API.Data
 {
@@ -43,6 +46,19 @@ namespace STC.API.Data
         public DbSet<ComponentVersion> ComponentVersions { get; set; }
         public DbSet<Stage> Stages { get; set; }
         public DbSet<Opportunity> Opportunities { get; set; }
+        public DbSet<Request> Request { get; set; }
+        public DbSet<Expense> Expense { get; set; }
+        public DbSet<ExpenseCategory> ExpenseCategory { get; set; }
+        public DbSet<UserReimbursement> UserReimbursements { get; set; }
+        public DbSet<UserExpense> UserExpenses { get; set; }
+        public DbSet<Reimbursee> Reimbursees { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
+
+        public DbSet<POPendingItem> POPendingItems { get; set; }
+        public DbSet<POPending> POPendings { get; set; }
+        public DbSet<POAuditTrail> POAuditTrails { get; set; }
+        public DbSet<POGuidStatus> POGuidStatus { get; set; }
+        public DbSet<POGuidStatusAttachment> POGuidStatusAttachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,13 +112,13 @@ namespace STC.API.Data
 
             modelBuilder.Entity<Opportunity>()
                 .HasMany(o => o.Components)
-                .WithOne()
+                .WithOne(c => c.Opportunity)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Component>()
                 .HasOne(o => o.Opportunity)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(c => c.Components)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Component>()
                 .HasOne(o => o.Category)
@@ -143,53 +159,56 @@ namespace STC.API.Data
                 .HasOne(o => o.Stage)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
-               
 
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.Component)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.Opportunity)
+            modelBuilder.Entity<Expense>()
+                .HasOne(o => o.ExpenseCategory)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.Category)
+            modelBuilder.Entity<UserReimbursement>()
+                .HasOne(o => o.Reimbursee)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.ComponentType)
+            modelBuilder.Entity<UserReimbursement>()
+                .HasOne(o => o.CreatedBy)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.AccountExecutive)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.SolutionsArchitect)
+            modelBuilder.Entity<UserReimbursement>()
+                .HasOne(o => o.ProcessBy)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.Product)
-                .WithMany()
+            modelBuilder.Entity<UserExpense>()
+                .HasOne(o => o.UserReimbursement)
+                .WithMany(x => x.UserExpenses)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.ModifiedBy)
-                .WithMany()
+            modelBuilder.Entity<UserPermission>()
+                .HasOne(o => o.User)
+                .WithMany(x => x.UserPermissions)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ComponentVersion>()
-                .HasOne(o => o.Stage)
-                .WithMany()
+            modelBuilder.Entity<POPendingItem>()
+                .HasOne(o => o.POPending)
+                .WithMany(x => x.POPendingItems)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<POAuditTrail>()
+                .HasOne(o => o.POPending)
+                .WithMany(x => x.POAuditTrails)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<POGuidStatusAttachment>()
+                .HasOne(o => o.POGuidStatus)
+                .WithMany(x => x.POGuidStatusAttachment)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Request>(b =>
+            {
+                b.Property(u => u.Id).HasDefaultValueSql("newsequentialid()");
+            });
         }
     }
 }

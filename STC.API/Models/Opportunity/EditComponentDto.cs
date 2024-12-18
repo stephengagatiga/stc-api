@@ -9,6 +9,19 @@ namespace STC.API.Models.Opportunity
 {
     public class EditComponentDto
     {
+        public string AccountName { get; set; }
+        public decimal DealSize { get; set; }
+        public string CategoryName { get; set; }
+        public string ComponentTypeName { get; set; }
+        public string ProductName { get; set; }
+        public string StageName { get; set; }
+        public string TargetCloseDateString { get; set; }
+        public string ValidityDateString { get; set; }
+        public string ModifiedByName { get; set; }
+        public string AccountExecutiveName { get; set; }
+        public string SolutionsArchitectName { get; set; }
+        public string NotifyToEmail { get; set; }
+        public OldComponentDto OldComponent { get; set; }
         [Required]
         public int Id { get; set; }
 

@@ -43,6 +43,8 @@ namespace STC.API.Entities.UserEntity
         [Required]
         public DateTime CreatedOn { get; set; }
 
+        public ICollection<UserPermission> UserPermissions { get; set; }
+
         [Required]
         public bool Active { get; set; }
     }

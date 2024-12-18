@@ -100,6 +100,14 @@ namespace STC.API.Services
             _context.SaveChanges();
         }
 
+        public void EnableUser(User user, bool isEnable)
+        {
+            user.Active = isEnable;
+            _context.Users.Update(user);
+            _context.Entry(user).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();
@@ -119,6 +127,7 @@ namespace STC.API.Services
         {
             var users = _context.Users
                                     .OrderBy(u => u.FirstName)
+                                    .Include(u => u.Role)
                                     .ToList();
             return users;
         }
@@ -142,6 +151,41 @@ namespace STC.API.Services
                                     .Where(u => userRoles.Any(ur => ur.Id == u.RoleId))
                                     .ToList();
             return users;
+        }
+
+        public ICollection<User> GetUsers(int[] userIds)
+        {
+            List<User> users = new List<User>();
+            for (int i = 0; i < userIds.Length; i++)
+            {
+                users.Add( _context.Users.FirstOrDefault(u => u.Id == userIds[i]));
+            }
+            return users;
+        }
+
+        public ICollection<User> GetAllUsersWithPermissions()
+        {
+            return _context.Users
+                            .Select(u => new User{ Id = u.Id, FirstName = u.FirstName, LastName = u.LastName, Email = u.Email,UserPermissions = u.UserPermissions })
+                            .Include(u => u.UserPermissions)
+                            .OrderBy(u => u.FirstName)
+                            .ToList();
+        }
+
+        public ICollection<UserPermission> GetAllUsersThisPermission(Permission permission)
+        {
+            return _context.UserPermissions
+                        .Where(p => p.Permission == permission)
+                        .Include(p => p.User)
+                        .ToList();
+
+        }
+
+        public User GetUserWithPermission(string objectId)
+        {
+            return _context.Users
+                            .Include(u => u.UserPermissions)
+                            .FirstOrDefault(u => u.ObjectId == objectId);
         }
     }
 }

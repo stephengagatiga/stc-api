@@ -33,5 +33,6 @@ namespace STC.API.Entities.OpportunityEntity
 
         public Status Status { get; set; }
         public ICollection<ComponentEntity.Component> Components { get; set; }
+        public Guid RequestId { get; set; }
     }
 }

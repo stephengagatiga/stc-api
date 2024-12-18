@@ -13,6 +13,7 @@ namespace STC.API.Entities.ComponentEntity
         ForRevision,
         Rejected,
         Closed,
-        Archived
+        Archived,
+        Lost
     }
 }
